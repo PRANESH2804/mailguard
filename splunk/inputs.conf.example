@@ -1,0 +1,21 @@
+# ==============================================================================
+# MailGuard Splunk Inputs Configuration Example
+# ==============================================================================
+
+# Option 1: Splunk HTTP Event Collector (HEC) Input (Recommended)
+# Configure via Splunk Web (Settings > Data Inputs > HTTP Event Collector)
+# or directly in /opt/splunk/etc/apps/mailguard/local/inputs.conf:
+#
+# [http://mailguard_hec]
+# disabled = 0
+# index = security_lab
+# sourcetype = mailguard:analysis
+# token = 00000000-0000-0000-0000-000000000000
+# useACK = 0
+
+# Option 2: File Monitor Input for local JSONL persistence file
+[monitor:///home/pranesh2804/mailguard/output/results.jsonl]
+disabled = false
+index = security_lab
+sourcetype = mailguard:analysis
+crc-salt = <SOURCE>

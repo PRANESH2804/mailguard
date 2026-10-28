@@ -1,0 +1,178 @@
+# ==============================================================================
+# MailGuard Configuration
+# ==============================================================================
+
+# Risk score thresholds for verdict classification
+# Range: 0 to 100
+verdict_thresholds:
+  legitimate_max: 30     # 0 - 30 -> LEGITIMATE
+  suspicious_max: 69     # 31 - 69 -> SUSPICIOUS
+  # 70 - 100 -> SPOOFED
+
+# Authentication failure weights (base contributions to risk score)
+auth_weights:
+  spf_fail: 30
+  spf_softfail: 15
+  spf_permerror: 10
+  spf_temperror: 5
+  dkim_fail: 35
+  dkim_missing: 10
+  dkim_expired: 15
+  dmarc_fail: 40
+  dmarc_missing: 10
+  spf_alignment_fail: 15
+  dkim_alignment_fail: 15
+
+# Heuristic weights
+heuristic_weights:
+  reply_to_mismatch: 15
+  display_name_email_mismatch: 20
+  brand_impersonation: 25
+  lookalike_domain: 30
+  unicode_punycode_domain: 20
+  suspicious_tld: 15
+  link_text_href_mismatch: 25
+  url_shortener: 10
+  url_ip_address: 20
+  suspicious_url_scheme: 30
+  double_extension_attachment: 35
+  risky_attachment_extension: 30
+  urgency_credentials_keyword: 15
+  missing_malformed_message_id: 10
+  suspicious_received_chain: 15
+  untrusted_auth_results: 15
+  sender_brand_similarity: 25
+
+# Configured lists
+lists:
+  suspicious_tlds:
+    - ".zip"
+    - ".mov"
+    - ".top"
+    - ".xyz"
+    - ".country"
+    - ".kim"
+    - ".cricket"
+    - ".science"
+    - ".work"
+    - ".party"
+    - ".gq"
+    - ".cf"
+    - ".tk"
+    - ".ml"
+    - ".ga"
+    - ".cam"
+    - ".buzz"
+
+  trusted_brand_domains:
+    - "paypal.com"
+    - "microsoft.com"
+    - "google.com"
+    - "apple.com"
+    - "amazon.com"
+    - "chase.com"
+    - "wellsfargo.com"
+    - "bankofamerica.com"
+    - "github.com"
+    - "cisco.com"
+    - "netflix.com"
+    - "dropbox.com"
+
+  url_shorteners:
+    - "bit.ly"
+    - "tinyurl.com"
+    - "t.co"
+    - "goo.gl"
+    - "ow.ly"
+    - "is.gd"
+    - "buff.ly"
+    - "cutt.ly"
+    - "rb.gy"
+    - "shorturl.at"
+
+  risky_attachment_extensions:
+    - ".exe"
+    - ".scr"
+    - ".bat"
+    - ".cmd"
+    - ".vbs"
+    - ".vbe"
+    - ".js"
+    - ".jse"
+    - ".wsf"
+    - ".wsh"
+    - ".ps1"
+    - ".hta"
+    - ".jar"
+    - ".xlsm"
+    - ".docm"
+    - ".pptm"
+    - ".iso"
+    - ".img"
+    - ".dll"
+    - ".com"
+    - ".pif"
+
+  urgency_keywords:
+    - "urgent"
+    - "immediate action"
+    - "account suspended"
+    - "verify your account"
+    - "password reset"
+    - "security alert"
+    - "unauthorized access"
+    - "update payment"
+    - "wire transfer"
+    - "invoice overdue"
+    - "critical notification"
+    - "validate credentials"
+    - "suspended indefinitely"
+    - "action required"
+    - "terminate your account"
+
+# Operational and Security Limits
+limits:
+  max_message_bytes: 26214400      # 25 MB
+  max_attachment_bytes: 10485760   # 10 MB
+  max_urls_to_analyze: 100
+  lookalike_ratio_threshold: 80.0   # Levenshtein/RapidFuzz similarity ratio (0-100)
+
+# DNS configuration
+dns:
+  timeout_seconds: 3.0
+  retries: 2
+  cache_ttl_seconds: 300
+  fixtures_file: "tests/fixtures/dns_records.json"
+
+# Output and Local persistence paths
+paths:
+  output_jsonl: "output/results.jsonl"
+  default_html_report: "output/report.html"
+
+# Splunk HEC Settings
+splunk:
+  hec_url_env: "SPLUNK_HEC_URL"
+  hec_token_env: "SPLUNK_HEC_TOKEN"
+  index: "security_lab"
+  sourcetype: "mailguard:analysis"
+  verify_ssl: true
+  timeout_seconds: 5.0
+  max_retries: 2
+
+# Trusted receiving mail gateways/servers (for boundary analysis)
+trusted_receivers:
+  - "mail.example.com"
+  - "mx.example.org"
+  - "inbound.security.local"
+  - "gateway.corp.example.com"
+
+# Privacy options
+privacy:
+  anonymize_recipients: false
+  hash_recipient_emails: false
+
+# External Threat Enrichment (Disabled by default)
+enrichment:
+  enabled: false
+  cache_ttl_seconds: 3600
+  timeout_seconds: 4.0

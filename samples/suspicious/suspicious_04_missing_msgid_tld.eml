@@ -1,0 +1,12 @@
+Received: from mail.example.com ([192.0.2.25]) by inbound.security.local with
+ ESMTP; Wed, 28 Oct 2026 10:30:00 +0000
+Date: Wed, 28 Oct 2026 06:49:45 -0000
+From: Customer Survey <survey@rewards.top>
+To: user@corp.example.net
+Subject: Claim your $50 gift card reward
+Return-Path: <survey@rewards.top>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+
+Click here to complete your feedback: http://rewards.top/claim

@@ -1,0 +1,14 @@
+Received: from evil-mta.test ([198.51.100.99]) by inbound.security.local with
+ ESMTP; Wed, 28 Oct 2026 10:35:00 +0000
+Message-ID: <179317018550.27992.3556064593809452982@example.com>
+Date: Wed, 28 Oct 2026 06:49:45 -0000
+From: Security Operations <security@example.com>
+To: executives@corp.example.net
+Subject: Mandatory MFA Enrollment - Action Required
+Return-Path: <security@example.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+Security notice: You must enroll your mobile authenticator at http://198.51.1=
+00.99/mfa

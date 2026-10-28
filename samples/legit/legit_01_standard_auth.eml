@@ -1,0 +1,28 @@
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=example.com;
+ i=@example.com; q=dns/txt; s=s1; t=1793170185; h=message-id : date :
+ from : to : subject : content-type : content-transfer-encoding :
+ mime-version : from; bh=GmwxesMViNhk/1EdDH9phunNKE4hRK0cgEWu+MaEpiQ=;
+ b=QnTZZiDMLOizG5qNxBDU+bmKmkL6/PFPbPMik4aUsugZoEkO+bfnJqwiM+G5XGTyW4bC9
+ KM4iajIabc4BGfIoMk26YptPEwYBCvOnOY7FIUVYNyK6ef4Q7UM0zTvOnCuby8yxcgFpM1v
+ 6zaftggaA3K8sfyzdx+LHdOai/nS0Yq6+vQNfmrT6A0zhYbpXX1gPg1tQ1Zo9Aa0ba94uVd
+ QayGw1dJPwiyYJ21/gmIQHzfGPPD3g+awea6e/3blaFy+6/9mSo3Z42+r3fazxKtXeCYIhA
+ 7u9T09tUCHM6rjVHqent/HE9vrelh8YbBPlxZB68PFmQ7q9RzDt+JVZuYsrw==
+Received: from mail.example.com ([192.0.2.15]) by inbound.security.local with
+ ESMTP; Wed, 28 Oct 2026 10:00:00 +0000
+Message-ID: <179317018546.27992.8138985004976275979@example.com>
+Date: Wed, 28 Oct 2026 06:49:45 -0000
+From: Alice Security <alice@example.com>
+To: soc-team@corp.example.net
+Subject: Quarterly Security Metrics Review
+Return-Path: <alice@example.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+Team,
+
+Please find the review schedule attached. All authentication controls are fun=
+ctioning normally.
+
+Best,
+Alice

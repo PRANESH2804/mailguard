@@ -1,0 +1,18 @@
+Received: from mail.example.com ([192.0.2.19]) by inbound.security.local with
+ ESMTP; Wed, 28 Oct 2026 10:15:00 +0000
+Message-ID: <179317018549.27992.13706815937934831696@example.com>
+Date: Wed, 28 Oct 2026 06:49:45 -0000
+From: Billing Support <billing@example.com>
+Reply-To: billing-replies@suspicious-billing.test
+To: victim@corp.example.net
+Subject: Urgent: Action required on invoice payment update
+Return-Path: <billing@example.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+Immediate action required: Please reply directly to confirm your wire transfe=
+r routing details to avoid account suspension.
+
+Thanks,
+Billing

@@ -1,0 +1,159 @@
+<form version="1.1" theme="dark">
+  <label>MailGuard: Email Authentication &amp; Spoofing Monitoring</label>
+  <description>Defensive SOC Dashboard for SPF, DKIM, DMARC Analysis and Spoofing Detection</description>
+  
+  <fieldset submitButton="true" autoRun="true">
+    <input type="time" token="time_tok">
+      <label>Time Range</label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="verdict_tok">
+      <label>Verdict Filter</label>
+      <choice value="*">All Verdicts</choice>
+      <choice value="LEGITIMATE">LEGITIMATE</choice>
+      <choice value="SUSPICIOUS">SUSPICIOUS</choice>
+      <choice value="SPOOFED">SPOOFED</choice>
+      <default>*</default>
+    </input>
+    <input type="text" token="domain_tok">
+      <label>Sender Domain</label>
+      <default>*</default>
+    </input>
+  </fieldset>
+
+  <!-- Row 1: KPI Single Values -->
+  <row>
+    <panel>
+      <single>
+        <title>Total Emails Analyzed</title>
+        <search>
+          <query>index=security_lab sourcetype="mailguard:analysis" from_domain="$domain_tok$" verdict="$verdict_tok$" | stats count</query>
+          <earliest>$time_tok.earliest$</earliest>
+          <latest>$time_tok.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x53a051","0x006d9c"]</option>
+        <option name="underLabel">Ingested Messages</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Suspected Spoofed Messages</title>
+        <search>
+          <query>index=security_lab sourcetype="mailguard:analysis" from_domain="$domain_tok$" verdict="SPOOFED" | stats count</query>
+          <earliest>$time_tok.earliest$</earliest>
+          <latest>$time_tok.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="underLabel">Critical Priority</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>DMARC Failure Rate</title>
+        <search>
+          <query>index=security_lab sourcetype="mailguard:analysis" from_domain="$domain_tok$" 
+| stats count as total, count(eval('dmarc.status'!="PASS")) as fails 
+| eval fail_rate=round((fails/total)*100, 1) 
+| fields fail_rate</query>
+          <earliest>$time_tok.earliest$</earliest>
+          <latest>$time_tok.latest$</latest>
+        </search>
+        <option name="numberPrecision">0.0</option>
+        <option name="unit">%</option>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[5,20]</option>
+      </single>
+    </panel>
+  </row>
+
+  <!-- Row 2: Charts -->
+  <row>
+    <panel>
+      <chart>
+        <title>Verdict Distribution</title>
+        <search>
+          <query>index=security_lab sourcetype="mailguard:analysis" from_domain="$domain_tok$" verdict="$verdict_tok$" 
+| stats count by verdict</query>
+          <earliest>$time_tok.earliest$</earliest>
+          <latest>$time_tok.latest$</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.fieldColors">{"LEGITIMATE":0x10b981,"SUSPICIOUS":0xf59e0b,"SPOOFED":0xef4444}</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>Authentication Failure Trends Over Time</title>
+        <search>
+          <query>index=security_lab sourcetype="mailguard:analysis" from_domain="$domain_tok$" 
+| eval spf_fail=if('spf.status'!="PASS", 1, 0), dkim_fail=if('dkim.overall_status'!="PASS", 1, 0), dmarc_fail=if('dmarc.status'!="PASS", 1, 0) 
+| timechart span=1h sum(spf_fail) as "SPF Failures", sum(dkim_fail) as "DKIM Failures", sum(dmarc_fail) as "DMARC Failures"</query>
+          <earliest>$time_tok.earliest$</earliest>
+          <latest>$time_tok.latest$</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.stackMode">stacked</option>
+      </chart>
+    </panel>
+  </row>
+
+  <!-- Row 3: Domain Rankings & High Risk Queue -->
+  <row>
+    <panel>
+      <table>
+        <title>Top Inbound Sender Domains</title>
+        <search>
+          <query>index=security_lab sourcetype="mailguard:analysis" from_domain="$domain_tok$" verdict="$verdict_tok$" 
+| stats count, count(eval(verdict=="SPOOFED")) as spoofed_count, avg(risk_score) as avg_risk by from_domain 
+| eval avg_risk=round(avg_risk, 1) 
+| sort - count 
+| head 15</query>
+          <earliest>$time_tok.earliest$</earliest>
+          <latest>$time_tok.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="count">10</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>High-Risk Email Triage Queue (Score &gt;= 70)</title>
+        <search>
+          <query>index=security_lab sourcetype="mailguard:analysis" from_domain="$domain_tok$" risk_score&gt;=70 
+| table _time, from_address, subject, originating_ip, "spf.status", "dkim.overall_status", "dmarc.status", risk_score, verdict 
+| sort - risk_score</query>
+          <earliest>$time_tok.earliest$</earliest>
+          <latest>$time_tok.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="count">10</option>
+      </table>
+    </panel>
+  </row>
+
+  <!-- Row 4: Risky Attachments & IOC Panel -->
+  <row>
+    <panel>
+      <table>
+        <title>Identified Risky &amp; Double-Extension Attachments</title>
+        <search>
+          <query>index=security_lab sourcetype="mailguard:analysis" "attachments{}.is_risky"=true OR "attachments{}.is_double_extension"=true 
+| mvexpand "attachments{}" 
+| search "attachments{}.is_risky"=true OR "attachments{}.is_double_extension"=true 
+| table _time, from_address, "attachments{}.filename", "attachments{}.sha256", "attachments{}.detected_extensions{}", risk_score, verdict 
+| sort - _time</query>
+          <earliest>$time_tok.earliest$</earliest>
+          <latest>$time_tok.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="count">10</option>
+      </table>
+    </panel>
+  </row>
+</form>

@@ -1,0 +1,40 @@
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=example.com;
+ i=@example.com; q=dns/txt; s=s1; t=1793170185; h=message-id : date :
+ from : to : subject : mime-version : content-type : from;
+ bh=M9OFn+TOoGIU4/MAsXoVdGLqGr9MFxjTJqKkibXgxIs=;
+ b=ChzNyvYJjBrezIqYA2/OAWZYmm1DpVdhllvuoK2UgHPaGg+jDB5xJHaibP73c65nXgDoB
+ Vj3MX4bgx10YyskXMrVIkJTkokaA5lIuTOT5EcwSfTSfsrXjk8gd+sZPjXPeFP9KjDuQgt1
+ W6UtR8ceL+3kb5CNvHthxezCuFVj+OuCQRT2dnSADW7/xUQvr6H3yqBLoIXKf/RCKs3XEOL
+ FszBFEhHE1brALYVUvy/+Ltjq0BGNTLDvb3A6x8RjUeA2oi3ixDcG1AdTj861tvizmFWcCs
+ 4bF+KCI2Diba8Wwl312A2bSOTYJMQsXl8AGh+0X/lTHTF875O1NQjOCYCpOw==
+Received: from mail.example.com ([192.0.2.20]) by inbound.security.local with
+ ESMTP; Wed, 28 Oct 2026 10:20:00 +0000
+Message-ID: <179317018549.27992.4098407118642017696@example.com>
+Date: Wed, 28 Oct 2026 06:49:45 -0000
+From: Corporate IT <it-help@example.com>
+To: staff@corp.example.net
+Subject: Scheduled portal maintenance and migration
+Return-Path: <it-help@example.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============7144906993607354699=="
+
+--===============7144906993607354699==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Please log in to verify your profile settings at https://portal.example.com/s=
+so
+
+--===============7144906993607354699==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<html><body>
+    <p>Please log in to verify your profile settings:</p>
+    <p><a href=3D"http://198.51.100.88/login">https://portal.example.com/sso<=
+/a></p>
+    </body></html>
+
+--===============7144906993607354699==--

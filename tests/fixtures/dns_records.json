@@ -1,0 +1,99 @@
+{
+  "example.com": {
+    "TXT": [
+      "v=spf1 ip4:192.0.2.0/24 -all"
+    ],
+    "A": [
+      "192.0.2.10"
+    ],
+    "MX": [
+      [
+        10,
+        "mail.example.com"
+      ]
+    ]
+  },
+  "mail.example.com": {
+    "A": [
+      "192.0.2.1"
+    ]
+  },
+  "_dmarc.example.com": {
+    "TXT": [
+      "v=DMARC1; p=reject; pct=100; rua=mailto:dmarc@example.com; adkim=r; aspf=r"
+    ]
+  },
+  "s1._domainkey.example.com": {
+    "TXT": [
+      "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiZjm7s2fWOJq2+X8xHqNjiReo96JjlxY7b7FEPOU16tnAh7+WFatE4j823DywytDmQ4z3My0BC93k/mVpgbc5Z5nQlF3sQkoRmEzpJzRT6HxVwkQM50pbS8MlEz4fo7L5JQZutOcgzadgQ9EJ5mnCIGuaHIDJhUsRLJ5XEkXesNOq3qYbjhSt8zHx3QweJpzY2jVdvq5gxsEVOAfB7BS0u5V5FKPXJbgmH4qbSOOWLCH8JCEKzkQUO8Ve1I7cdHFwTfUAY8uLcJjUrr9rtbUT7SrtQ0lWog8Ei5LFtrcvcRVGlZLv13Tm8ZHn8pI+RZoB7Morem38Hhjt6O1ckZIBQIDAQAB"
+    ]
+  },
+  "marketing.example.com": {
+    "TXT": [
+      "v=spf1 ip4:192.0.2.0/24 -all"
+    ],
+    "A": [
+      "192.0.2.20"
+    ]
+  },
+  "s1._domainkey.marketing.example.com": {
+    "TXT": [
+      "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiZjm7s2fWOJq2+X8xHqNjiReo96JjlxY7b7FEPOU16tnAh7+WFatE4j823DywytDmQ4z3My0BC93k/mVpgbc5Z5nQlF3sQkoRmEzpJzRT6HxVwkQM50pbS8MlEz4fo7L5JQZutOcgzadgQ9EJ5mnCIGuaHIDJhUsRLJ5XEkXesNOq3qYbjhSt8zHx3QweJpzY2jVdvq5gxsEVOAfB7BS0u5V5FKPXJbgmH4qbSOOWLCH8JCEKzkQUO8Ve1I7cdHFwTfUAY8uLcJjUrr9rtbUT7SrtQ0lWog8Ei5LFtrcvcRVGlZLv13Tm8ZHn8pI+RZoB7Morem38Hhjt6O1ckZIBQIDAQAB"
+    ]
+  },
+  "corp.example.net": {
+    "TXT": [
+      "v=spf1 ip4:192.0.2.0/24 -all"
+    ],
+    "A": [
+      "192.0.2.30"
+    ]
+  },
+  "_dmarc.corp.example.net": {
+    "TXT": [
+      "v=DMARC1; p=quarantine; pct=100; rua=mailto:reports@corp.example.net"
+    ]
+  },
+  "s1._domainkey.corp.example.net": {
+    "TXT": [
+      "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiZjm7s2fWOJq2+X8xHqNjiReo96JjlxY7b7FEPOU16tnAh7+WFatE4j823DywytDmQ4z3My0BC93k/mVpgbc5Z5nQlF3sQkoRmEzpJzRT6HxVwkQM50pbS8MlEz4fo7L5JQZutOcgzadgQ9EJ5mnCIGuaHIDJhUsRLJ5XEkXesNOq3qYbjhSt8zHx3QweJpzY2jVdvq5gxsEVOAfB7BS0u5V5FKPXJbgmH4qbSOOWLCH8JCEKzkQUO8Ve1I7cdHFwTfUAY8uLcJjUrr9rtbUT7SrtQ0lWog8Ei5LFtrcvcRVGlZLv13Tm8ZHn8pI+RZoB7Morem38Hhjt6O1ckZIBQIDAQAB"
+    ]
+  },
+  "paypa1.com": {
+    "TXT": [
+      "v=spf1 ip4:198.51.100.50 -all"
+    ],
+    "A": [
+      "198.51.100.50"
+    ]
+  },
+  "examp1e.com": {
+    "TXT": [
+      "v=spf1 +all"
+    ],
+    "A": [
+      "198.51.100.60"
+    ]
+  },
+  "suspicious-billing.test": {
+    "TXT": [
+      "v=spf1 +all"
+    ],
+    "A": [
+      "198.51.100.70"
+    ]
+  },
+  "attacker-mail.test": {
+    "TXT": [
+      "v=spf1 ip4:203.0.113.0/24 -all"
+    ],
+    "A": [
+      "203.0.113.5"
+    ]
+  },
+  "_dmarc.attacker-mail.test": {
+    "TXT": [
+      "v=DMARC1; p=none"
+    ]
+  }
+}

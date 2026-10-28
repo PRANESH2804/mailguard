@@ -1,0 +1,27 @@
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=marketing.example.com; i=@marketing.example.com; q=dns/txt; s=s1;
+ t=1793170185; h=message-id : date : from : to : subject : content-type
+ : content-transfer-encoding : mime-version : from;
+ bh=BCN1jvIJFUHuhsz/YXcHtYFbfyKnw0dCXEGnjRlxTrM=;
+ b=MuFpQ+i2obh6q2/lRXaCsoDgOKGc3I9fUNOl8YgA5wIO6vpXJx86oLjwEyERlKL2lBZIS
+ gb2QoHYfbkKTYhMaOEJkENpTq271odhKYIPoZLwUwFF+7epHzaNqaQoyhNrrtDVxaCRnCp4
+ ZTQhWlhL8cSN5NwAZDbj5UcO2GkL2HnZhHkJhD6NBdKAHK5sqMdY76MSDXW7zwNsCjLvJMA
+ SZWj1J4U803vaTQk6EFvA5oStikoAI214oqBztT0ZVBO3/OZ/FUqcXjvYodhzb7827dV3Lf
+ voHNebZUcWbdVa90ahQqbQw538wxIGYXr6goERd+A33tloF7VYz+wU7iozCw==
+Received: from mail.example.com ([192.0.2.22]) by inbound.security.local with
+ ESMTP; Wed, 28 Oct 2026 10:05:00 +0000
+Message-ID: <179317018547.27992.5921721932848787040@marketing.example.com>
+Date: Wed, 28 Oct 2026 06:49:45 -0000
+From: Product Updates <news@marketing.example.com>
+To: all-staff@corp.example.net
+Subject: Monthly Product Bulletin
+Return-Path: <bounces@marketing.example.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+
+Hello everyone,
+
+Here is our monthly engineering newsletter: https://example.com/newsletter
+
+Cheers!
