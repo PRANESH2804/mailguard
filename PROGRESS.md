@@ -24,8 +24,10 @@ Tracking implementation phases, test runs, and completion milestones.
   - Deliverables: 11 synthetic .eml samples with locally signed DKIM signatures, offline DNS fixtures (`dns_records.json`), and comprehensive 72-test offline test suite covering parsing, Received chain boundary walking, IDN/punycode alignment, multi-signature DKIM, heuristics, boundaries, SOAR export, Splunk forwarder, and web UI.
   - Test Results: 72 passed in 1.90s.
   - Known gaps: None. Phase 6 evaluation & defect validation next.
-- [ ] **Phase 6: Validation & Evaluation** - Not Started
-  - Deliverables: `evaluate.py` metrics (Accuracy, Precision, Recall, F1, FPR, Confusion Matrix), zero defects.
+- [x] **Phase 6: Validation & Evaluation** - Completed
+  - Deliverables: Executed `evaluate.py` across the synthetic corpus (11 samples: 3 legit, 4 suspicious, 4 spoofed). Verified detection metrics: 100.0% Accuracy, 100.0% Precision, 100.0% Recall, 1.0000 F1-Score, 0.0% FPR, and zero misclassifications. Handled boundary cases and documented statistical dataset limitations.
+  - Test Results: 72 passed in 1.93s.
+  - Known gaps: None. Phase 7 Splunk app content next.
 - [ ] **Phase 7: Splunk App & Content** - Not Started
   - Deliverables: props.conf, transforms.conf, inputs.conf.example, saved_searches.conf, dashboard.xml.
 - [ ] **Phase 8: Documentation & Portfolio Readiness** - Not Started

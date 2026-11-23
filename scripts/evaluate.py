@@ -142,6 +142,18 @@ def evaluate_corpus() -> Dict[str, Any]:
     else:
         console.print("[bold green]Zero misclassifications on synthetic ground truth corpus![/bold green]\n")
 
+    # Discussion on Dataset Limitations
+    limitation_text = (
+        "[bold yellow]Statistical & Evaluation Limitations Note:[/bold yellow]\n"
+        "These metrics reflect evaluation on a small, curated synthetic corpus (N=11) designed to test "
+        "deterministic protocol compliance and specific heuristic edge cases under offline test fixtures.\n"
+        "In production enterprise mail flows, real-world environments present complex forwarding chains, "
+        "mailing list re-signing (ARC/SRS), legacy non-standard MTAs, and benign marketing campaigns. "
+        "Consequently, 100% synthetic precision/recall demonstrates test correctness and rule validity, "
+        "not absolute immunity to real-world false positives or false negatives."
+    )
+    console.print(Panel(limitation_text, title="Evaluation Limits & Threat Model Scope", border_style="yellow"))
+
     return {
         "total_samples": total_samples,
         "correct_samples": correct_samples,
