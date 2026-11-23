@@ -16,6 +16,13 @@ class Verdict(str, Enum):
     SPOOFED = "SPOOFED"
 
 
+class RecommendedAction(str, Enum):
+    """Advisory recommended action for SOC workflows."""
+    ALLOW = "ALLOW"
+    QUARANTINE_AND_REVIEW = "QUARANTINE_AND_REVIEW"
+    ESCALATE_TO_SOC = "ESCALATE_TO_SOC"
+
+
 class AuthStatus(str, Enum):
     """Standardized authentication check status."""
     PASS = "PASS"
@@ -355,10 +362,11 @@ class AnalysisResult:
     heuristics: List[HeuristicFinding]
     risk_score: int
     verdict: Verdict
-    top_reasons: List[str]
-    mitre_techniques: List[MITREMapping]
-    urls: List[URLInfo]
-    attachments: List[AttachmentInfo]
+    recommended_action: RecommendedAction = RecommendedAction.ALLOW
+    top_reasons: List[str] = field(default_factory=list)
+    mitre_techniques: List[MITREMapping] = field(default_factory=list)
+    urls: List[URLInfo] = field(default_factory=list)
+    attachments: List[AttachmentInfo] = field(default_factory=list)
     enrichment_results: List[EnrichmentResult] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
@@ -378,7 +386,12 @@ class AnalysisResult:
             "alignment": self.alignment.to_dict(),
             "heuristics": [h.to_dict() for h in self.heuristics],
             "risk_score": self.risk_score,
-            "verdict": self.verdict.value,
+            "verdict": self.verdict.value if isinstance(self.verdict, Verdict) else str(self.verdict),
+            "recommended_action": (
+                self.recommended_action.value
+                if isinstance(self.recommended_action, RecommendedAction)
+                else str(self.recommended_action)
+            ),
             "top_reasons": self.top_reasons,
             "mitre_techniques": [m.to_dict() for m in self.mitre_techniques],
             "urls": [u.to_dict() for u in self.urls],
