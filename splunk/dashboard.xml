@@ -126,7 +126,7 @@
         <title>High-Risk Email Triage Queue (Score &gt;= 70)</title>
         <search>
           <query>index=security_lab sourcetype="mailguard:analysis" from_domain="$domain_tok$" risk_score&gt;=70 
-| table _time, from_address, subject, originating_ip, "spf.status", "dkim.overall_status", "dmarc.status", risk_score, verdict 
+| table _time, from_address, subject, originating_ip, "spf.status", "dkim.overall_status", "dmarc.status", risk_score, verdict, recommended_action 
 | sort - risk_score</query>
           <earliest>$time_tok.earliest$</earliest>
           <latest>$time_tok.latest$</latest>
@@ -146,7 +146,7 @@
           <query>index=security_lab sourcetype="mailguard:analysis" "attachments{}.is_risky"=true OR "attachments{}.is_double_extension"=true 
 | mvexpand "attachments{}" 
 | search "attachments{}.is_risky"=true OR "attachments{}.is_double_extension"=true 
-| table _time, from_address, "attachments{}.filename", "attachments{}.sha256", "attachments{}.detected_extensions{}", risk_score, verdict 
+| table _time, from_address, "attachments{}.filename", "attachments{}.sha256", "attachments{}.detected_extensions{}", risk_score, verdict, recommended_action 
 | sort - _time</query>
           <earliest>$time_tok.earliest$</earliest>
           <latest>$time_tok.latest$</latest>

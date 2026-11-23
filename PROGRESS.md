@@ -28,7 +28,9 @@ Tracking implementation phases, test runs, and completion milestones.
   - Deliverables: Executed `evaluate.py` across the synthetic corpus (11 samples: 3 legit, 4 suspicious, 4 spoofed). Verified detection metrics: 100.0% Accuracy, 100.0% Precision, 100.0% Recall, 1.0000 F1-Score, 0.0% FPR, and zero misclassifications. Handled boundary cases and documented statistical dataset limitations.
   - Test Results: 72 passed in 1.93s.
   - Known gaps: None. Phase 7 Splunk app content next.
-- [ ] **Phase 7: Splunk App & Content** - Not Started
-  - Deliverables: props.conf, transforms.conf, inputs.conf.example, saved_searches.conf, dashboard.xml.
+- [x] **Phase 7: Splunk App & Content** - Completed
+  - Deliverables: Splunk app configuration (`props.conf`, `transforms.conf`, `inputs.conf.example`), 7 production detection rules (`saved_searches.conf` detections A through G), SOC XML dashboard with 6 panels and dynamic filters (`dashboard.xml`), setup automation script (`setup_splunk.sh`), and detailed integration guide (`splunk/README.md`).
+  - Test Results: 72 passed in 1.92s.
+  - Known gaps: None. Phase 8 documentation and portfolio readiness next.
 - [ ] **Phase 8: Documentation & Portfolio Readiness** - Not Started
   - Deliverables: README.md, how_it_works.md, testing.md, splunk_setup.md, threat_model.md, interview_guide.md.
