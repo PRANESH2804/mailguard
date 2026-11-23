@@ -8,8 +8,10 @@ Tracking implementation phases, test runs, and completion milestones.
   - Deliverables: short `docs/architecture.md` (41 lines, < 60 lines target), data models with `RecommendedAction` & updated `AnalysisResult`, module responsibilities table, and Mermaid data flow.
   - Test Results: 56 passed in 0.70s.
   - Known gaps: None. Phase 2 core engine validation next.
-- [ ] **Phase 2: Core Analysis Engine** - Not Started
-  - Deliverables: models, utils, dns_resolver, parser, SPF, DKIM, DMARC, alignment, heuristics, scorer (with recommended_action), MITRE, config.yaml, requirements, pyproject, and core tests.
+- [x] **Phase 2: Core Analysis Engine** - Completed
+  - Deliverables: models, utils, dns_resolver, parser, SPF, DKIM, DMARC, alignment, heuristics, scorer (with recommended_action & boundary tests), MITRE (T1672, T1566.001, T1566.002, T1566.003, T1534), config.yaml, requirements.txt, pyproject.toml, and core tests.
+  - Test Results: 58 passed in 0.73s.
+  - Known gaps: None. Phase 3 reporting & integrations (soar_export, splunk_forwarder, report, enrichment) next.
 - [ ] **Phase 3: Reporting & Integrations** - Not Started
   - Deliverables: report, local JSONL, Splunk forwarder, enrichment, soar_export, and tests.
 - [ ] **Phase 4: Interfaces (CLI & Web UI)** - Not Started

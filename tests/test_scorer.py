@@ -4,10 +4,12 @@ import pytest
 
 from mailguard.models import (
     AlignmentResult,
+    AttachmentInfo,
     AuthStatus,
     DKIMResult,
     DMARCResult,
     HeuristicFinding,
+    RecommendedAction,
     Severity,
     SPFResult,
     Verdict,
@@ -69,3 +71,59 @@ def test_scorer_boundary_100_spoofed(scorer):
     assert score == 100
     assert verdict == Verdict.SPOOFED
     assert len(reasons) >= 3
+
+
+def test_scorer_recommended_actions_boundaries(scorer):
+    # Boundary 0: LEGITIMATE -> ALLOW
+    assert scorer.derive_recommended_action(Verdict.LEGITIMATE) == RecommendedAction.ALLOW
+    
+    # Boundary 30: LEGITIMATE -> ALLOW
+    v_30 = scorer.classify_verdict(30)
+    assert v_30 == Verdict.LEGITIMATE
+    assert scorer.derive_recommended_action(v_30) == RecommendedAction.ALLOW
+
+    # Boundary 31: SUSPICIOUS -> QUARANTINE_AND_REVIEW
+    v_31 = scorer.classify_verdict(31)
+    assert v_31 == Verdict.SUSPICIOUS
+    assert scorer.derive_recommended_action(v_31) == RecommendedAction.QUARANTINE_AND_REVIEW
+
+    # Boundary 69: SUSPICIOUS -> QUARANTINE_AND_REVIEW
+    v_69 = scorer.classify_verdict(69)
+    assert v_69 == Verdict.SUSPICIOUS
+    assert scorer.derive_recommended_action(v_69) == RecommendedAction.QUARANTINE_AND_REVIEW
+
+    # Boundary 70: SPOOFED -> ESCALATE_TO_SOC
+    v_70 = scorer.classify_verdict(70)
+    assert v_70 == Verdict.SPOOFED
+    assert scorer.derive_recommended_action(v_70) == RecommendedAction.ESCALATE_TO_SOC
+
+    # Boundary 100: SPOOFED -> ESCALATE_TO_SOC
+    v_100 = scorer.classify_verdict(100)
+    assert v_100 == Verdict.SPOOFED
+    assert scorer.derive_recommended_action(v_100) == RecommendedAction.ESCALATE_TO_SOC
+
+
+def test_scorer_risky_attachment_escalates_even_if_legitimate(scorer):
+    # Even if score is 0 / LEGITIMATE, a high-risk attachment finding MUST escalate to SOC
+    finding = HeuristicFinding(
+        id="SUSP_ATTACHMENT_RISKY_EXT",
+        name="Executable/Script Attachment Extension",
+        severity=Severity.HIGH,
+        weight=25,
+        description="Dangerous attachment detected",
+        evidence="payload.exe",
+    )
+    action = scorer.derive_recommended_action(Verdict.LEGITIMATE, heuristics=[finding])
+    assert action == RecommendedAction.ESCALATE_TO_SOC
+
+    # Also test via AttachmentInfo is_risky flag
+    att = AttachmentInfo(
+        filename="invoice.pdf.exe",
+        content_type="application/octet-stream",
+        size_bytes=1024,
+        sha256="abc",
+        is_risky=True,
+    )
+    action_att = scorer.derive_recommended_action(Verdict.LEGITIMATE, attachments=[att])
+    assert action_att == RecommendedAction.ESCALATE_TO_SOC
+

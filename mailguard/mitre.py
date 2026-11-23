@@ -110,4 +110,28 @@ class MITREMapper:
                 finding_ids=link_finding_ids,
             )
 
+        # 4. T1566.003 - Spearphishing via Service (contextual evidence only)
+        service_finding_ids = [h.id for h in heuristics if h.mitre_technique == "T1566.003" or "service" in h.id.lower()]
+        if service_finding_ids:
+            t_def = TECHNIQUES_DEF["T1566.003"]
+            mappings["T1566.003"] = MITREMapping(
+                technique_id="T1566.003",
+                technique_name=t_def["name"],
+                tactic=t_def["tactic"],
+                rationale="Message leverages third-party cloud service lures or platforms to deliver malicious content.",
+                finding_ids=service_finding_ids,
+            )
+
+        # 5. T1534 - Internal Spearphishing (contextual evidence only)
+        internal_finding_ids = [h.id for h in heuristics if h.mitre_technique == "T1534" or "internal" in h.id.lower()]
+        if internal_finding_ids:
+            t_def = TECHNIQUES_DEF["T1534"]
+            mappings["T1534"] = MITREMapping(
+                technique_id="T1534",
+                technique_name=t_def["name"],
+                tactic=t_def["tactic"],
+                rationale="Observed indicators indicate lateral movement or internal email identity abuse.",
+                finding_ids=internal_finding_ids,
+            )
+
         return list(mappings.values())

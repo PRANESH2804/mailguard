@@ -11,6 +11,8 @@ from mailguard.models import (
     DKIMResult,
     DMARCResult,
     HeuristicFinding,
+    RecommendedAction,
+    Severity,
     SPFResult,
     Verdict,
 )
@@ -89,6 +91,42 @@ class RiskScorer:
             return Verdict.SUSPICIOUS
         else:
             return Verdict.SPOOFED
+
+    def derive_recommended_action(
+        self,
+        verdict: Verdict,
+        heuristics: Optional[List[HeuristicFinding]] = None,
+        attachments: Optional[List[Any]] = None,
+    ) -> RecommendedAction:
+        """Derive actionable advisory recommendation for SOC operations.
+
+        Advisory only; never executes remediation automatically:
+        - ESCALATE_TO_SOC: Assigned for SPOOFED verdict or any high-risk attachment finding.
+        - QUARANTINE_AND_REVIEW: Assigned for SUSPICIOUS verdict.
+        - ALLOW: Assigned for LEGITIMATE verdict.
+        """
+        has_risky_attachment = False
+        if attachments:
+            for att in attachments:
+                if getattr(att, "is_risky", False) or getattr(att, "is_double_extension", False):
+                    has_risky_attachment = True
+                    break
+        if heuristics:
+            for h in heuristics:
+                h_id = getattr(h, "id", "")
+                h_sev = getattr(h, "severity", "")
+                if h_id in ("SUSP_ATTACHMENT_RISKY_EXT", "SUSP_ATTACHMENT_DOUBLE_EXT"):
+                    has_risky_attachment = True
+                    break
+                if "attachment" in h_id.lower() and h_sev in (Severity.HIGH, Severity.CRITICAL, "HIGH", "CRITICAL"):
+                    has_risky_attachment = True
+                    break
+
+        if verdict == Verdict.SPOOFED or has_risky_attachment:
+            return RecommendedAction.ESCALATE_TO_SOC
+        elif verdict == Verdict.SUSPICIOUS:
+            return RecommendedAction.QUARANTINE_AND_REVIEW
+        return RecommendedAction.ALLOW
 
     def _score_spf(self, spf: SPFResult) -> Tuple[int, str]:
         if spf.status == AuthStatus.FAIL:

@@ -107,6 +107,11 @@ class MailGuardAnalyzer:
             alignment=align_res,
             heuristics=heuristics,
         )
+        recommended_action = self.scorer.derive_recommended_action(
+            verdict=verdict,
+            heuristics=heuristics,
+            attachments=parsed.attachments,
+        )
 
         # Step 6: MITRE ATT&CK Mapping
         mitre_techs = self.mitre_mapper.map_evidence(
@@ -147,6 +152,7 @@ class MailGuardAnalyzer:
             heuristics=heuristics,
             risk_score=score,
             verdict=verdict,
+            recommended_action=recommended_action,
             top_reasons=top_reasons,
             mitre_techniques=mitre_techs,
             urls=parsed.urls,
