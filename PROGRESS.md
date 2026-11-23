@@ -32,5 +32,9 @@ Tracking implementation phases, test runs, and completion milestones.
   - Deliverables: Splunk app configuration (`props.conf`, `transforms.conf`, `inputs.conf.example`), 7 production detection rules (`saved_searches.conf` detections A through G), SOC XML dashboard with 6 panels and dynamic filters (`dashboard.xml`), setup automation script (`setup_splunk.sh`), and detailed integration guide (`splunk/README.md`).
   - Test Results: 72 passed in 1.92s.
   - Known gaps: None. Phase 8 documentation and portfolio readiness next.
-- [ ] **Phase 8: Documentation & Portfolio Readiness** - Not Started
+- [x] **Phase 8: Documentation & Portfolio Readiness** - Completed
+  - Deliverables: Comprehensive `README.md` with problem statement, architecture Mermaid diagrams, directory tree, installation, CLI/Web instructions, offline mode, sample reports, Splunk detections, testing documentation, evaluation results, ATT&CK matrix, limitations, demo script, and resume bullet points; complete `docs/` technical library (`architecture.md` <60 lines, `how_it_works.md`, `threat_model.md`, `testing.md`, `splunk_setup.md`, `interview_guide.md`).
+  - Test Results: 72 passed in 1.91s.
+  - Known gaps: None. All 8 phases completed with 100% verified offline tests and measured metrics.
+
   - Deliverables: README.md, how_it_works.md, testing.md, splunk_setup.md, threat_model.md, interview_guide.md.

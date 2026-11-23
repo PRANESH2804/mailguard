@@ -6,7 +6,7 @@ This guide prepares you to defend **MailGuard** in technical cybersecurity inter
 
 ## 1. 30-Second Elevator Pitch
 
-> *"MailGuard is an open-source defensive email security and detection engineering tool built in Python. It analyzes raw `.eml` messages, evaluates SPF, DKIM, and DMARC with strict and relaxed identifier alignment, executes 17+ behavioral heuristic rules, maps findings to MITRE ATT&CK, and computes an explainable 0–100 risk score. It features guaranteed local JSONL persistence, a dual-path Splunk HTTP Event Collector (HEC) integration with production SPL detections and an executive SOC dashboard, and a Flask web UI. The entire suite runs 100% offline with 56 automated unit tests and demonstrated 100% precision and recall across our synthetic ground-truth corpus."*
+> *"MailGuard is an open-source defensive email security and detection engineering tool built in Python. It analyzes raw `.eml` messages, evaluates SPF, DKIM, and DMARC with strict and relaxed identifier alignment, executes 17+ behavioral heuristic rules, maps findings to MITRE ATT&CK, computes an explainable 0–100 risk score, derives advisory SOC recommendations (ALLOW, QUARANTINE_AND_REVIEW, ESCALATE_TO_SOC), and generates standardized SOAR incident tickets. It features guaranteed local JSONL persistence, a dual-path Splunk HTTP Event Collector (HEC) integration with production SPL detections and an executive SOC dashboard, and a Flask web UI. The entire suite runs 100% offline with 72 automated unit tests and demonstrated 100% precision and recall across our synthetic ground-truth corpus."*
 
 ---
 

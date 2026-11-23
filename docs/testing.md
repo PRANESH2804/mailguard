@@ -16,24 +16,25 @@ MailGuard enforces strict engineering standards:
 
 ## 2. Test Suite Architecture
 
-The test suite contains **56 automated test cases** distributed across 11 test modules:
+The test suite contains **72 automated test cases** distributed across 12 test modules:
 
 ```
 tests/
 ├── conftest.py                  # Pytest session fixtures (RSA key generation, offline resolver)
 ├── fixtures/
 │   └── dns_records.json         # Static DNS TXT, A, and MX fixtures
-├── test_parser.py               # MIME parsing, MIME decoding, URLs, attachments, size limits
+├── test_parser.py               # MIME parsing, MIME decoding, URLs, attachments, Received boundaries, size limits
 ├── test_spf.py                  # SPF pass, fail, softfail, none, and Auth-Results fallback
-├── test_dkim.py                 # Real RSA signing, body hash tampering, expiration, missing keys
+├── test_dkim.py                 # Real RSA signing, body hash tampering, expiration, missing keys, multi-signature
 ├── test_dmarc.py                # Aligned SPF/DKIM pass, DMARC fail, subdomain policies, missing records
-├── test_alignment.py            # Strict and relaxed alignment, Public Suffix List (.co.uk)
+├── test_alignment.py            # Strict and relaxed alignment, Public Suffix List (.co.uk), IDN/punycode
 ├── test_heuristics.py           # 17 heuristic detection rules and false positive resistance
-├── test_scorer.py               # Boundary tests (0, 30, 31, 69, 70, 100) and clamping
+├── test_scorer.py               # Boundary tests (0, 30, 31, 69, 70, 100), recommended_action, risky attachment escalation
+├── test_soar_export.py          # SOAR ticket schema compliance, severity mapping, JSON serialization
 ├── test_enrichment.py           # Mocked AbuseIPDB, VirusTotal, TTL caching, error resilience
-├── test_splunk_forwarder.py     # Local JSONL persistence, HEC 200 OK, 401 Auth failure, retries
-├── test_cli.py                  # CLI subcommands (analyze, analyze-dir, --format json, --offline)
-└── test_web.py                  # Flask web upload, extension validation, CSRF tokens, JSON download
+├── test_splunk_forwarder.py     # Local JSONL persistence, HEC 200 OK, 401 Auth failure, timeouts, server errors, privacy sanitization
+├── test_cli.py                  # CLI subcommands (analyze, analyze-dir, --format json, --offline, --soar-export)
+└── test_web.py                  # Flask web upload, extension validation, CSRF tokens, JSON download, oversize, malformed, XSS escaping
 ```
 
 ---

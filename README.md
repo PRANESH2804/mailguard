@@ -1,12 +1,12 @@
 # MailGuard: Email Authentication & Spoofing Analyzer
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
-[![Tests: 56 Passed](https://img.shields.io/badge/tests-56%20passed-brightgreen.svg)](https://pytest.org)
+[![Tests: 72 Passed](https://img.shields.io/badge/tests-72%20passed-brightgreen.svg)](https://pytest.org)
 [![Accuracy: 100%](https://img.shields.io/badge/accuracy-100%25-success.svg)](scripts/evaluate.py)
 [![Splunk CIM Ready](https://img.shields.io/badge/Splunk-CIM%20Compliant-orange.svg)](splunk/)
 [![Defensive Security](https://img.shields.io/badge/purpose-defensive%20security-critical.svg)](docs/threat_model.md)
 
-**MailGuard** is a production-grade, portfolio-ready defensive cybersecurity tool and SOC detection pipeline designed to inspect raw `.eml` email messages, evaluate cryptographic authentication protocols (**SPF, DKIM, DMARC**), enforce strict and relaxed identifier alignment, analyze behavioral heuristics (lookalikes, homoglyphs, dangerous attachments, deceptive URLs), map adversary tactics to **MITRE ATT&CK**, compute explainable risk scores (0–100), and forward enriched telemetry to **Splunk SIEM**.
+**MailGuard** is a production-grade, portfolio-ready defensive cybersecurity tool and SOC detection pipeline designed to inspect raw `.eml` email messages, evaluate cryptographic authentication protocols (**SPF, DKIM, DMARC**), enforce strict and relaxed identifier alignment, analyze behavioral heuristics (lookalikes, homoglyphs, dangerous attachments, deceptive URLs), map adversary tactics to **MITRE ATT&CK**, compute explainable risk scores (0–100), derive advisory SOC actions (**ALLOW, QUARANTINE_AND_REVIEW, ESCALATE_TO_SOC**), export standardized SOAR incident tickets, and forward enriched telemetry to **Splunk SIEM**.
 
 ---
 
@@ -51,11 +51,12 @@ While **SPF**, **DKIM**, and **DMARC** exist to counteract spoofing, verifying t
 - **Full Protocol Verification**: Evaluates SPF (RFC 7208 via `pyspf`), cryptographically verifies DKIM signatures against raw bytes (RFC 6376 via `dkimpy`), and assesses DMARC compliance (RFC 7489) with organizational-domain fallback.
 - **Identifier Alignment**: Evaluates both strict (exact FQDN) and relaxed (organizational domain via `tldextract`) alignment for SPF and DKIM.
 - **17+ Defensive Heuristic Rules**: Detects Reply-To mismatches, embedded display-name spoofing, brand combosquatting, typosquatting (RapidFuzz), Cyrillic/Greek homoglyphs, suspicious TLDs, link text-versus-href mismatches, URL shorteners, direct IP URLs, dangerous double-extension files (`.pdf.exe`), and macro attachments.
-- **Explainable Scoring Engine**: Computes a deterministic 0–100 risk score with correlation dampening, assigning three defensive verdicts:
-  - `0 - 30`: **LEGITIMATE**
-  - `31 - 69`: **SUSPICIOUS**
-  - `70 - 100`: **SPOOFED**
-- **Dual-Path Splunk Ingestion**: Guaranteed atomic local persistence (`output/results.jsonl`) with retry-resilient Splunk HTTP Event Collector (HEC) streaming into index `security_lab` with sourcetype `mailguard:analysis`.
+- **Explainable Scoring & Recommended Actions**: Computes a deterministic 0–100 risk score with correlation dampening, assigning three defensive verdicts and advisory SOC actions:
+  - `0 - 30`: **LEGITIMATE** -> `ALLOW`
+  - `31 - 69`: **SUSPICIOUS** -> `QUARANTINE_AND_REVIEW`
+  - `70 - 100` (or risky attachment): **SPOOFED** -> `ESCALATE_TO_SOC`
+- **SOAR Ticketing Incident Export**: Standalone CLI `--soar-export` and Python module (`soar_export.py`) producing structured incident JSON tickets with observable IOCs, ranked reasons, ATT&CK techniques, and executive analyst summaries.
+- **Dual-Path Splunk Ingestion**: Guaranteed atomic local persistence (`output/results.jsonl`) with recipient privacy options (masking/hashing) and retry-resilient Splunk HTTP Event Collector (HEC) streaming into index `security_lab` with sourcetype `mailguard:analysis`.
 - **Pre-Built Splunk Detection Content**: 7 production SPL searches and a complete 6-panel Simple XML SOC dashboard.
 - **Flask SOC Analyst Dashboard**: Clean, responsive web UI with drag-and-drop `.eml` upload, CSRF protection, and JSON export.
 - **100% Offline Resilience**: Includes a deterministic offline DNS fixture resolver, enabling zero-internet testing and air-gapped forensic triage.
@@ -154,6 +155,7 @@ mailguard/
 │   ├── mitre.py                       # Evidence-based MITRE ATT&CK mapping
 │   ├── enrichment.py                  # Optional OSINT lookups (VirusTotal, AbuseIPDB)
 │   ├── splunk_forwarder.py            # Local JSONL persistence and Splunk HEC forwarder
+│   ├── soar_export.py                 # SOAR ticketing incident payload generator
 │   ├── report.py                      # Terminal (Rich), JSON, and HTML report generator
 │   ├── cli.py                         # Command-line interface orchestration
 │   ├── web.py                         # Flask web application for SOC analysts
@@ -165,7 +167,7 @@ mailguard/
 │   ├── suspicious/                    # Urgency, Reply-To mismatch, shortener samples
 │   └── spoofed/                       # SPF fail, lookalikes, tampered DKIM, double extensions
 │
-├── tests/                             # Automated test suite (56 passed)
+├── tests/                             # Automated test suite (72 passed)
 │   ├── conftest.py                    # Pytest fixtures and mock RSA key generation
 │   ├── fixtures/
 │   │   └── dns_records.json           # Offline DNS TXT/A/MX records
@@ -176,6 +178,7 @@ mailguard/
 │   ├── test_alignment.py              # Strict vs relaxed domain alignment
 │   ├── test_heuristics.py             # Heuristic rules and false positive tests
 │   ├── test_scorer.py                 # Boundary score tests (0, 30, 31, 69, 70, 100)
+│   ├── test_soar_export.py            # SOAR incident ticket schema & export tests
 │   ├── test_enrichment.py             # Mocked OSINT lookups and caching
 │   ├── test_splunk_forwarder.py       # JSONL logging and HEC HTTP tests
 │   ├── test_cli.py                    # CLI commands and formats
@@ -247,6 +250,9 @@ mailguard analyze samples/legit/legit_01_standard_auth.eml --offline --format js
 
 # Export standalone HTML report
 mailguard analyze samples/spoofed/spoofed_02_lookalike_typosquatting.eml --offline --format html -o output/report.html
+
+# Export standardized SOAR incident ticket JSON
+mailguard analyze samples/spoofed/spoofed_03_double_extension_display_spoof.eml --offline --soar-export output/soar_ticket.json
 ```
 
 ### B. Analyze an Entire Directory (Batch Mode)
@@ -302,7 +308,7 @@ Below is actual terminal output generated by MailGuard on a spoofed email:
 ```text
 ╭──────────────────────────────────────────────────────────────────────────────╮
 │ MAILGUARD EMAIL AUTHENTICATION & SPOOFING REPORT                             │
-│ Verdict: SPOOFED  |  Risk Score: 100/100                                     │
+│ Verdict: SPOOFED  |  Risk Score: 100/100  |  Action: ESCALATE_TO_SOC (Advisory)
 │ Subject: Mandatory MFA Enrollment - Action Required                          │
 │ From: security@example.com | MsgID: <179316999137.25790.17924@example.com>   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
@@ -350,22 +356,23 @@ MailGuard ships with a pre-configured Splunk App in `splunk/`:
 
 ## 11. Automated Testing
 
-The automated test suite contains **56 unit and integration tests** executing in **0.75 seconds**:
+The automated test suite contains **72 unit and integration tests** executing in under **2.0 seconds**:
 
 ```bash
 pytest -v
 ```
 
 ### Coverage Scope:
-- **Parser**: Headers, MIME decoding, URL extraction, attachments, SHA-256, Received hops, limits.
+- **Parser**: Headers, MIME decoding, URL extraction, attachments, SHA-256, Received hops boundary-walking, limits.
 - **SPF**: Pass, fail, softfail, neutral, none, permerror, Authentication-Results fallback.
-- **DKIM**: RSA-2048 signing, valid signatures, tampered body hashes, missing keys, expired signatures.
+- **DKIM**: RSA-2048 signing, valid signatures, tampered body hashes, missing keys, expired signatures, multi-signature.
 - **DMARC**: Strict/relaxed alignment, subdomain policy inheritance (`sp=`), missing records.
-- **Alignment**: Subdomain vs. organizational domain, Public Suffix List (`.co.uk`).
+- **Alignment**: Subdomain vs. organizational domain, Public Suffix List (`.co.uk`), IDN/Punycode.
 - **Heuristics**: Reply-To mismatch, display name spoofing, lookalikes, homoglyphs, double extensions, urgency.
-- **Risk Scorer**: Boundary tests at scores 0, 30, 31, 69, 70, 100, and brand correlation dampening.
-- **Splunk HEC**: Local JSONL persistence, HEC 200 OK, HEC 401/403 failure, retry logic.
-- **Flask Web & CLI**: Upload limits, CSRF token validation, security headers, format flags.
+- **Risk Scorer & Actions**: Boundary tests at scores 0, 30, 31, 69, 70, 100, recommended actions, risky attachment escalation.
+- **SOAR Export**: Incident ticket schema compliance, severity derivation, JSON serialization.
+- **Splunk HEC**: Local JSONL persistence, HEC 200 OK, HEC 401/403 failure, retry logic, timeout, 500 error, privacy sanitization.
+- **Flask Web & CLI**: Upload limits, CSRF token validation, security headers, format flags, oversize, malformed email, XSS escaping.
 
 ---
 
@@ -455,12 +462,12 @@ python scripts/evaluate.py
 >
 > **1:30 - 2:00 (Testing & Measured Metrics)**:  
 > *(Run: `pytest -v` and `python scripts/evaluate.py`)*  
-> *"Finally, software reliability is verified through 56 automated unit tests covering everything from RSA signature verification to CSRF defenses. Running our evaluation script across the ground-truth corpus confirms 100% accuracy, 100% precision, and a 0.0% false-positive rate."*
+> *"Finally, software reliability is verified through 72 automated unit tests covering everything from RSA signature verification and boundary-walking to CSRF defenses and SOAR incident export. Running our evaluation script across the ground-truth corpus confirms 100% accuracy, 100% precision, and a 0.0% false-positive rate."*
 
 ---
 
 ## 19. Resume Bullet Points
 
-- **Engineered an open-source defensive email security analyzer (MailGuard)** in Python to evaluate SPF, DKIM, and DMARC with strict/relaxed identifier alignment, 17+ behavioral heuristics, and automated MITRE ATT&CK mapping (`T1672`, `T1566`).
-- **Constructed a resilient Splunk SIEM detection pipeline** utilizing HTTP Event Collector (HEC) and atomic JSONL persistence, developing 7 production SPL correlation rules and a 6-panel executive SOC triage dashboard.
-- **Implemented an explainable, deterministic risk scoring algorithm** and comprehensive 56-test pytest suite with offline DNS fixture injection, achieving **100% precision and recall (0% FPR)** across synthetic ground-truth corpus.
+- **Engineered an open-source defensive email security analyzer (MailGuard)** in Python to evaluate SPF, DKIM, and DMARC with strict/relaxed identifier alignment, 17+ behavioral heuristics, advisory SOC action recommendations, and automated MITRE ATT&CK mapping (`T1672`, `T1566`).
+- **Constructed a resilient Splunk SIEM detection & SOAR pipeline** utilizing HTTP Event Collector (HEC) and atomic JSONL persistence, developing 7 production SPL correlation rules, a 6-panel executive SOC triage dashboard, and automated SOAR ticketing schema export.
+- **Implemented an explainable, deterministic risk scoring algorithm** and comprehensive 72-test pytest suite with offline DNS fixture injection, achieving **100% precision and recall (0% FPR)** across synthetic ground-truth corpus.
