@@ -1,24 +1,24 @@
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=example.com;
- i=@example.com; q=dns/txt; s=s1; t=1793170185; h=message-id : date :
+ i=@example.com; q=dns/txt; s=s1; t=1795452644; h=message-id : date :
  from : to : subject : mime-version : content-type : from;
- bh=2ZELXIMSX9YNTjqpE2S6yHB8wFDE4gAnP6qXw3O4gZA=;
- b=d1ZRlzuddbX+wRcItYxyyKCuTMnDHgR6B+De03yJJAOEA19V938jJj7OZ6jQFU+IfqayC
- qoNd6Hg0/gGEExdSlQ7fn9w7vqi4eZ+tZpFM7vxL+8RARfMH5c1YmQQQUIHXY/mHnamQEAI
- kTgsYHUD0Z6/kbemmSwDA3//+hDx7O7FcihB91dbbc3Fj/NKyHa1ol42t/XFBsBOGKqaQlf
- kRRKr8JCirqOeWGZNkLUiJhSrbWE+tgxCAQdan8nQ4iUwsXdKZjczjRbh/uA2c1KvIONLCp
- 7sgoM4m+Fl9pZIzAzawNiXFTKflIpz3fvzfccLpKz0uPYExp7eHXXTMbegNQ==
+ bh=oBj69sifdoQ/I/Wp28/aeiLSKp7iroOa/zpzy7GJ01Y=;
+ b=nFhaykcsYoiHkJ8r7i+3qj0UGrj2n544Tg+cAYXio8FlsZTHDQ0REWobvxWzVMl1Zo5Ni
+ AUgEjjxY9vYoei8P5nyO8vr2KePBXeJSaN1RFx784tI140n+3bnyZhckz8PabrLHfBKqPzk
+ xUg1lHhVjjnLA+3YeLrV9JYsBpCHNHE5ynqOWHijtnLApGs0uBrpZfeoC7Vjn8kV5fNHflc
+ LoglxW9V19F73J2wNX8gJLLuWKUhvGr3cC39SMYWrx2kjpJJB7LqxGZaMjFDXI0VGl94kY7
+ FBKSBlMbc7A/qb1Ibvw6lBtqkWFqHE+Qc4hSd7veXv/jmY4NYIaw6bkqgxbg==
 Received: from mail.example.com ([192.0.2.18]) by inbound.security.local with
  ESMTP; Wed, 28 Oct 2026 10:10:00 +0000
-Message-ID: <179317018548.27992.13234713217891988076@example.com>
-Date: Wed, 28 Oct 2026 06:49:45 -0000
+Message-ID: <179545264430.40220.101601920556537206@example.com>
+Date: Mon, 23 Nov 2026 16:50:44 -0000
 From: Finance Department <finance@example.com>
 To: accounting@corp.example.net
 Subject: Approved Purchase Order PO-9842
 Return-Path: <finance@example.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3766426058312197081=="
+Content-Type: multipart/mixed; boundary="===============5383533203433314495=="
 
---===============3766426058312197081==
+--===============5383533203433314495==
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
@@ -27,7 +27,7 @@ Please find attached the signed purchase order PDF for vendor renewal.
 Regards,
 Finance
 
---===============3766426058312197081==
+--===============5383533203433314495==
 Content-Type: application/pdf
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="PO-9842.pdf"
@@ -35,4 +35,4 @@ MIME-Version: 1.0
 
 JVBERi0xLjQgTW9jayBQREYgRG9jdW1lbnQgQ29udGVudA==
 
---===============3766426058312197081==--
+--===============5383533203433314495==--

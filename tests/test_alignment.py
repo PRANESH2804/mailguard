@@ -54,3 +54,29 @@ def test_alignment_public_suffix_co_uk():
     assert res.spf_aligned_strict is False
     assert res.spf_aligned_relaxed is True
     assert res.dkim_aligned_relaxed is True
+
+
+def test_alignment_idn_punycode():
+    align = IdentifierAlignment()
+    # German umlaut domain vs ascii punycode
+    res = align.evaluate(
+        visible_from_domain="xn--mller-kva.de",  # müller.de
+        spf_domain="sub.xn--mller-kva.de",
+        dkim_domains=["xn--mller-kva.de"],
+    )
+    assert res.spf_aligned_relaxed is True
+    assert res.dkim_aligned_strict is True
+
+
+def test_alignment_missing_and_malformed_domains():
+    align = IdentifierAlignment()
+    res = align.evaluate(
+        visible_from_domain="",
+        spf_domain=None,
+        dkim_domains=[],
+    )
+    assert res.spf_aligned_strict is False
+    assert res.spf_aligned_relaxed is False
+    assert res.dkim_aligned_strict is False
+    assert res.dkim_aligned_relaxed is False
+

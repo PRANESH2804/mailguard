@@ -20,8 +20,10 @@ Tracking implementation phases, test runs, and completion milestones.
   - Deliverables: CLI with `analyze`, `analyze-dir`, `web`, `--offline`, `--send-to-splunk`, `--soar-export`, `--format json|table|html`; Flask UI with recommended actions, security headers, CSRF protection, and upload validation; unit tests covering CLI and web (valid upload, invalid extension, oversize, malformed email, JSON download, HTML escaping).
   - Test Results: 68 passed in 1.91s.
   - Known gaps: None. Phase 5 sample corpus generation and full test suite next.
-- [ ] **Phase 5: Samples & Full Test Suite** - Not Started
-  - Deliverables: Synthetic sample corpus (legit, suspicious, spoofed), locally signed DKIM fixtures, comprehensive pytest suite.
+- [x] **Phase 5: Samples & Full Test Suite** - Completed
+  - Deliverables: 11 synthetic .eml samples with locally signed DKIM signatures, offline DNS fixtures (`dns_records.json`), and comprehensive 72-test offline test suite covering parsing, Received chain boundary walking, IDN/punycode alignment, multi-signature DKIM, heuristics, boundaries, SOAR export, Splunk forwarder, and web UI.
+  - Test Results: 72 passed in 1.90s.
+  - Known gaps: None. Phase 6 evaluation & defect validation next.
 - [ ] **Phase 6: Validation & Evaluation** - Not Started
   - Deliverables: `evaluate.py` metrics (Accuracy, Precision, Recall, F1, FPR, Confusion Matrix), zero defects.
 - [ ] **Phase 7: Splunk App & Content** - Not Started

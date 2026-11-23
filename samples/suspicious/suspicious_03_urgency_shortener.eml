@@ -1,7 +1,7 @@
 Received: from mail.example.com ([192.0.2.21]) by inbound.security.local with
  ESMTP; Wed, 28 Oct 2026 10:25:00 +0000
-Message-ID: <179317018550.27992.4898914437482680505@example.com>
-Date: Wed, 28 Oct 2026 06:49:45 -0000
+Message-ID: <179545264432.40220.581271752001371432@example.com>
+Date: Mon, 23 Nov 2026 16:50:44 -0000
 From: Admin <alerts@example.com>
 To: user@corp.example.net
 Subject: Urgent: Account suspended due to unauthorized access

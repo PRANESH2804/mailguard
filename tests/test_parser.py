@@ -93,3 +93,22 @@ def test_parser_max_size_limit():
     parser.max_message_bytes = 100  # Set artificially low limit
     with pytest.raises(ValueError, match="exceeds maximum"):
         parser.parse_bytes(b"A" * 200)
+
+
+def test_parser_originating_ip_received_chain_boundary():
+    # Chain: sender (203.0.113.50) -> trusted gateway (192.0.2.1) -> internal receiver (10.0.0.5)
+    raw = (
+        b"From: test@example.com\r\n"
+        b"To: user@example.com\r\n"
+        b"Subject: Boundary Test\r\n"
+        b"Message-ID: <boundary@example.com>\r\n"
+        b"Received: from internal.corp.local ([10.0.0.5]) by mail.corp.local with ESMTP; Wed, 28 Oct 2026 10:02:00 +0000\r\n"
+        b"Received: from gateway.corp.example.com ([192.0.2.1]) by internal.corp.local with ESMTP; Wed, 28 Oct 2026 10:01:00 +0000\r\n"
+        b"Received: from remote.sender.net ([203.0.113.50]) by gateway.corp.example.com with ESMTP; Wed, 28 Oct 2026 10:00:00 +0000\r\n"
+        b"\r\n"
+        b"Test body\r\n"
+    )
+    parser = EmailParser(config={"trusted_receivers": ["gateway.corp.example.com", "mail.corp.local"]})
+    parsed = parser.parse_bytes(raw)
+    assert parsed.candidate_originating_ip == "203.0.113.50"
+

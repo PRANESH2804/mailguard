@@ -1,17 +1,17 @@
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=marketing.example.com; i=@marketing.example.com; q=dns/txt; s=s1;
- t=1793170185; h=message-id : date : from : to : subject : content-type
+ t=1795452644; h=message-id : date : from : to : subject : content-type
  : content-transfer-encoding : mime-version : from;
  bh=BCN1jvIJFUHuhsz/YXcHtYFbfyKnw0dCXEGnjRlxTrM=;
- b=MuFpQ+i2obh6q2/lRXaCsoDgOKGc3I9fUNOl8YgA5wIO6vpXJx86oLjwEyERlKL2lBZIS
- gb2QoHYfbkKTYhMaOEJkENpTq271odhKYIPoZLwUwFF+7epHzaNqaQoyhNrrtDVxaCRnCp4
- ZTQhWlhL8cSN5NwAZDbj5UcO2GkL2HnZhHkJhD6NBdKAHK5sqMdY76MSDXW7zwNsCjLvJMA
- SZWj1J4U803vaTQk6EFvA5oStikoAI214oqBztT0ZVBO3/OZ/FUqcXjvYodhzb7827dV3Lf
- voHNebZUcWbdVa90ahQqbQw538wxIGYXr6goERd+A33tloF7VYz+wU7iozCw==
+ b=VIC7bmG3+/Z5Mg8jp1nfYuWUKRcNrdifPzRzot7bDT/Z4/zeHuoNta3XiC1BAClK+yceK
+ a/HLEru+ZhbBl4NSf9d9HTniUhtr4e1PFUT5bENTBJb4GX2bb15pkTLNWYJonK3omXH7ep5
+ pVUX63GIkd0mh+fcI/xfeTX27J4MkbyHy5AjdNgLxtf7fzmW1uzHnGnhd6UGs7OFfFlXXId
+ 4i3pqwl/8U2vDWM9Dkn0gWYF1FpYEFsjN0UBt3WxSfju5PyyEcJTJvRX5dfX98aGIH/2FGH
+ AAS3IwPczJF0++td9JGY+it1vN9znGgZqLU5c2FYedXJluoFs3YAsoNu5MvQ==
 Received: from mail.example.com ([192.0.2.22]) by inbound.security.local with
  ESMTP; Wed, 28 Oct 2026 10:05:00 +0000
-Message-ID: <179317018547.27992.5921721932848787040@marketing.example.com>
-Date: Wed, 28 Oct 2026 06:49:45 -0000
+Message-ID: <179545264429.40220.12322687899285701578@marketing.example.com>
+Date: Mon, 23 Nov 2026 16:50:44 -0000
 From: Product Updates <news@marketing.example.com>
 To: all-staff@corp.example.net
 Subject: Monthly Product Bulletin

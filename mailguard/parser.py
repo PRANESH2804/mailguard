@@ -274,17 +274,41 @@ class EmailParser:
             hops.append(hop)
 
         # Originating IP extraction:
-        # Traverse from top (most recent receiver) downward.
-        # Find the first hop where the sending IP is public/non-reserved or first hop outside trusted receiving boundary.
+        # Walk Received chain starting from internal infrastructure downward.
+        # Boundary-walking algorithm:
+        # 1. Primary: Walk down through internal relays and trusted infrastructure.
+        #    An internal hop has a private/loopback sending IP or a sending host in trusted_receivers.
+        #    The ingress gateway is the hop received by a trusted receiver from an external client.
         for hop in hops:
             if hop.from_ip and is_ip_address(hop.from_ip):
-                if not is_private_or_reserved_ip(hop.from_ip):
-                    candidate_ip = hop.from_ip
-                    break
+                try:
+                    ip_obj = ipaddress.ip_address(hop.from_ip.strip())
+                    is_internal = ip_obj.is_private or ip_obj.is_loopback
+                except ValueError:
+                    is_internal = False
 
-        # Fallback: if all hops are reserved or private (e.g. lab environment), pick the first valid IP found
+                is_from_trusted = bool(hop.from_host and any(tr in hop.from_host for tr in self.trusted_receivers))
+
+                if (hop.is_trusted_receiver or (hop.by and any(tr in hop.by for tr in self.trusted_receivers))):
+                    if not is_internal and not is_from_trusted:
+                        candidate_ip = hop.from_ip
+                        break
+
+        # 2. Secondary: If no trusted receiver boundary matched, find first non-private/non-loopback IP
         if not candidate_ip:
             for hop in hops:
+                if hop.from_ip and is_ip_address(hop.from_ip):
+                    try:
+                        ip_obj = ipaddress.ip_address(hop.from_ip.strip())
+                        if not (ip_obj.is_private or ip_obj.is_loopback):
+                            candidate_ip = hop.from_ip
+                            break
+                    except ValueError:
+                        continue
+
+        # 3. Tertiary Fallback: Outermost (last) valid IP in the Received hops
+        if not candidate_ip:
+            for hop in reversed(hops):
                 if hop.from_ip and is_ip_address(hop.from_ip):
                     candidate_ip = hop.from_ip
                     break

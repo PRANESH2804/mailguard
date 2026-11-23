@@ -1,21 +1,21 @@
 Received: from mail.attacker-mail.test ([203.0.113.5]) by
  inbound.security.local with ESMTP; Wed, 28 Oct 2026 10:45:00 +0000
-Message-ID: <179317018550.27992.8375319659730096166@attacker-mail.test>
-Date: Wed, 28 Oct 2026 06:49:45 -0000
+Message-ID: <179545264432.40220.3826182278786429256@attacker-mail.test>
+Date: Mon, 23 Nov 2026 16:50:44 -0000
 From: "Helpdesk <admin@example.com>" <hacker@attacker-mail.test>
 To: employee@corp.example.net
 Subject: Critical Security Patch Update
 Return-Path: <hacker@attacker-mail.test>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2192271592728124108=="
+Content-Type: multipart/mixed; boundary="===============4233023272085989883=="
 
---===============2192271592728124108==
+--===============4233023272085989883==
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
 Please run the attached patch to fix vulnerability CVE-2026-9999.
 
---===============2192271592728124108==
+--===============4233023272085989883==
 Content-Type: application/octet-stream
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="SecurityPatch_v2.1.pdf.exe"
@@ -23,4 +23,4 @@ MIME-Version: 1.0
 
 TVqQAEJpbmFyeU1vY2tQYXlsb2Fk
 
---===============2192271592728124108==--
+--===============4233023272085989883==--

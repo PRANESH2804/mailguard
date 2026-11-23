@@ -97,3 +97,25 @@ def test_dkim_expired_signature(rsa_keypair, offline_resolver, sample_email_byte
 
     assert result.signatures[0].verification_status == AuthStatus.FAIL
     assert "expired" in result.signatures[0].explanation.lower()
+
+
+def test_dkim_multiple_signatures(rsa_keypair, offline_resolver, sample_email_bytes):
+    priv_pem, _ = rsa_keypair
+    # Sign with primary domain
+    sig1 = dkim.sign(sample_email_bytes, b"s1", b"example.com", priv_pem)
+    # Sign second time with secondary domain
+    sig2 = dkim.sign(sample_email_bytes, b"s1", b"corp.example.net", priv_pem)
+    double_signed = sig2 + sig1 + sample_email_bytes
+
+    parser = EmailParser()
+    parsed = parser.parse_bytes(double_signed)
+
+    checker = DKIMChecker(resolver=offline_resolver)
+    result = checker.evaluate(parsed)
+
+    assert len(result.signatures) == 2
+    assert result.overall_status == AuthStatus.PASS
+    domains = {s.signing_domain for s in result.signatures}
+    assert "example.com" in domains
+    assert "corp.example.net" in domains
+

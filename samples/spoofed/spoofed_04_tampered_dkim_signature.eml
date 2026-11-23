@@ -1,16 +1,16 @@
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=example.com;
- i=@example.com; q=dns/txt; s=s1; t=1793170185; h=message-id : date :
+ i=@example.com; q=dns/txt; s=s1; t=1795452644; h=message-id : date :
  from : to : subject : content-type : content-transfer-encoding :
  mime-version : from; bh=8KcXs0ysackMvlD2z6vOvaMRYXzN5wDWvazrvjA6VqE=;
- b=LPxDxq8RDEXFdRmLGasOmRvxWHGevMz8miVCAwIXaaxPaY4WRHq0LWl5CBd4CieIdbIBi
- 5/6L3Es6GvKmUzqSfwTSZGq7RCowT8/wwAxWSCHORMqH8FWp2nAFsp/F56H/IWOERz45svR
- R32fbipoRULBtDY8NNrnlx+eCYUMviDcVl2usHvq4LyJp3n3SVadFn/eSQ6QdCaQCggERTe
- tMX7UwtTbVmHIGBaUZ7Eh2LqV5HS4/O5fc+9VKJHzp48Rl0luBkYCkomyR+07dnuwM73UoJ
- is4f7GLeAn3ZHBFBrKdh4VIsOrSZluzYfv05XgxHKtdyd6SkRkL41Pe3K8zA==
+ b=ODPKU/0rRl7eAKj2Ji59GvwsfeJAGe3cRRECeNX/dKdK95KEfdhyN/AxjlUvYxjqVXj02
+ sBBTkuMPg4XYWro6cQkaVgVOpaMmarryOuIK7YF4SXGdtcUwsDRXsn2x36TVom+nCTZ23yg
+ ADh6qcBY/xvpfepb72GZ/PdPsQorlXAvX/nVbhaZUGqaZtw2qT+LfZaMJ680G+jo274xKZ1
+ seOTQfe7notgaInHMSICDSh25qu4rHGwNUSL8VoLGlRlJLhOgzE/0Z5o4+Ndk+WuCqzz7IG
+ W7/A7YqLC4xO9r+a51ugkTAwA70mosxXnevNzzygw7HO1G3Kz6QdgbyMe2Vw==
 Received: from spoof.attacker-mail.test ([203.0.113.99]) by
  inbound.security.local with ESMTP; Wed, 28 Oct 2026 10:50:00 +0000
-Message-ID: <179317018550.27992.16352973811925808964@example.com>
-Date: Wed, 28 Oct 2026 06:49:45 -0000
+Message-ID: <179545264432.40220.17590864966100682531@example.com>
+Date: Mon, 23 Nov 2026 16:50:44 -0000
 From: CEO Office <ceo@example.com>
 To: cfo@corp.example.net
 Subject: Confidential Wire Transfer Request
