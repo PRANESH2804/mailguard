@@ -42,9 +42,14 @@ class ReportGenerator:
             verdict_color = "bold red"
 
         # 2. Main Title Banner
+        action_val = (
+            result.recommended_action.value
+            if hasattr(result.recommended_action, "value")
+            else str(result.recommended_action)
+        )
         title_text = Text()
         title_text.append("MAILGUARD EMAIL AUTHENTICATION & SPOOFING REPORT\n", style="bold cyan")
-        title_text.append(f"Verdict: {result.verdict.value}  |  Risk Score: {result.risk_score}/100\n", style=verdict_color)
+        title_text.append(f"Verdict: {result.verdict.value}  |  Risk Score: {result.risk_score}/100  |  Action: {action_val} (Advisory)\n", style=verdict_color)
         title_text.append(f"Subject: {result.subject}\n", style="white")
         title_text.append(f"From: {result.from_address} | MsgID: {result.message_id or 'N/A'}", style="dim")
 
@@ -173,12 +178,14 @@ class ReportGenerator:
         table.add_column("DMARC", justify="center")
         table.add_column("Score", justify="right")
         table.add_column("Verdict", style="bold")
+        table.add_column("Action (Advisory)", style="magenta")
 
         for r in results:
             v_color = "green" if r.verdict == Verdict.LEGITIMATE else ("yellow" if r.verdict == Verdict.SUSPICIOUS else "red")
             spf_color = "green" if r.spf.status == AuthStatus.PASS else "red"
             dkim_color = "green" if r.dkim.overall_status == AuthStatus.PASS else "red"
             dmarc_color = "green" if r.dmarc.status == AuthStatus.PASS else "red"
+            action_val = r.recommended_action.value if hasattr(r.recommended_action, "value") else str(r.recommended_action)
 
             table.add_row(
                 (r.message_id or "N/A")[:25],
@@ -188,6 +195,7 @@ class ReportGenerator:
                 Text(r.dmarc.status.value, style=dmarc_color),
                 str(r.risk_score),
                 Text(r.verdict.value, style=v_color),
+                Text(action_val, style="bold cyan"),
             )
 
         self.console.print(table)
@@ -196,6 +204,11 @@ class ReportGenerator:
         """Generate a standalone, interactive HTML security report."""
         v_class = result.verdict.value.lower()
         score_pct = result.risk_score
+        action_val = (
+            result.recommended_action.value
+            if hasattr(result.recommended_action, "value")
+            else str(result.recommended_action)
+        )
 
         heur_rows = ""
         for h in result.heuristics:
@@ -323,6 +336,7 @@ class ReportGenerator:
             </div>
             <div style="text-align: right;">
                 <div class="verdict-badge verdict-{v_class}">{safe_html(result.verdict.value)}</div>
+                <div style="margin-top: 4px; font-size: 0.95rem; font-weight: bold; color: var(--accent);">Action: {safe_html(action_val)} <small style="font-size: 0.75rem; color: var(--text-dim);">(Advisory)</small></div>
                 <div style="margin-top: 8px; font-size: 0.9rem;">Risk Score: <strong>{result.risk_score}</strong> / 100</div>
                 <div class="score-bar-bg" style="width: 160px; display: inline-block;">
                     <div class="score-bar-fill"></div>

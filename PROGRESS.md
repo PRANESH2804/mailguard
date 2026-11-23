@@ -12,8 +12,10 @@ Tracking implementation phases, test runs, and completion milestones.
   - Deliverables: models, utils, dns_resolver, parser, SPF, DKIM, DMARC, alignment, heuristics, scorer (with recommended_action & boundary tests), MITRE (T1672, T1566.001, T1566.002, T1566.003, T1534), config.yaml, requirements.txt, pyproject.toml, and core tests.
   - Test Results: 58 passed in 0.73s.
   - Known gaps: None. Phase 3 reporting & integrations (soar_export, splunk_forwarder, report, enrichment) next.
-- [ ] **Phase 3: Reporting & Integrations** - Not Started
-  - Deliverables: report, local JSONL, Splunk forwarder, enrichment, soar_export, and tests.
+- [x] **Phase 3: Reporting & Integrations** - Completed
+  - Deliverables: Rich terminal/table/HTML reporting, local JSONL persistence (`output/results.jsonl`), Splunk HEC forwarder with recipient privacy hashing/masking & retry logic, optional enrichment, SOAR ticketing export (`mailguard/soar_export.py`), and test suite (`test_soar_export.py`, `test_splunk_forwarder.py`).
+  - Test Results: 64 passed in 1.76s.
+  - Known gaps: None. Phase 4 CLI & Flask interfaces next.
 - [ ] **Phase 4: Interfaces (CLI & Web UI)** - Not Started
   - Deliverables: CLI subcommands (`analyze`, `analyze-dir`, `web`), Flask UI, CSRF, security headers, and interface tests.
 - [ ] **Phase 5: Samples & Full Test Suite** - Not Started

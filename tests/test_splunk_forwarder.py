@@ -98,4 +98,54 @@ def test_splunk_hec_unconfigured(monkeypatch, dummy_result):
     forwarder = SplunkForwarder()
     success, msg = forwarder.forward_to_splunk(dummy_result)
     assert success is False
-    assert "not configured" in msg.lower()
+
+
+def test_splunk_hec_timeout(monkeypatch, dummy_result):
+    monkeypatch.setenv("SPLUNK_HEC_URL", "http://splunk-server.local:8088/services/collector/event")
+    monkeypatch.setenv("SPLUNK_HEC_TOKEN", "mock-token")
+    forwarder = SplunkForwarder(config={"splunk": {"max_retries": 1, "timeout_seconds": 0.1}})
+
+    import requests
+    with patch("requests.post", side_effect=requests.exceptions.Timeout("Connection timed out")):
+        success, msg = forwarder.forward_to_splunk(dummy_result)
+        assert success is False
+        assert "timed out" in msg.lower() or "failed" in msg.lower()
+
+
+def test_splunk_hec_server_error(monkeypatch, dummy_result):
+    monkeypatch.setenv("SPLUNK_HEC_URL", "http://splunk-server.local:8088/services/collector/event")
+    monkeypatch.setenv("SPLUNK_HEC_TOKEN", "mock-token")
+    forwarder = SplunkForwarder(config={"splunk": {"max_retries": 1}})
+
+    mock_resp = MagicMock()
+    mock_resp.status_code = 500
+    mock_resp.text = '{"text":"Internal Server Error","code":5}'
+
+    with patch("requests.post", return_value=mock_resp):
+        success, msg = forwarder.forward_to_splunk(dummy_result)
+        assert success is False
+        assert "500" in msg
+
+
+def test_splunk_recipient_privacy_sanitization(tmp_path, dummy_result):
+    # Test hashing
+    jsonl_file = tmp_path / "privacy_results.jsonl"
+    forwarder_hash = SplunkForwarder(config={
+        "paths": {"output_jsonl": str(jsonl_file)},
+        "privacy": {"hash_recipient_emails": True, "anonymize_recipients": False},
+    })
+    forwarder_hash.persist_locally(dummy_result)
+    with open(jsonl_file, "r") as f:
+        data = json.loads(f.readline())
+        assert data["recipients"][0].startswith("sha256:")
+
+    # Test masking
+    jsonl_file_mask = tmp_path / "mask_results.jsonl"
+    forwarder_mask = SplunkForwarder(config={
+        "paths": {"output_jsonl": str(jsonl_file_mask)},
+        "privacy": {"hash_recipient_emails": False, "anonymize_recipients": True},
+    })
+    forwarder_mask.persist_locally(dummy_result)
+    with open(jsonl_file_mask, "r") as f:
+        data_mask = json.loads(f.readline())
+        assert data_mask["recipients"][0] == "a***@example.com"

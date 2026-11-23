@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import os
 from pathlib import Path
 import time
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import requests
 
@@ -47,11 +48,35 @@ class SplunkForwarder:
         self.timeout = float(splunk_cfg.get("timeout_seconds", 5.0))
         self.max_retries = int(splunk_cfg.get("max_retries", 2))
 
+    def _sanitize_recipients(self, recipients: List[str]) -> List[str]:
+        """Apply configured privacy rules (masking or SHA-256 hashing) to recipient addresses."""
+        privacy_cfg = self.config.get("privacy", {})
+        hash_recipients = privacy_cfg.get("hash_recipient_emails", False)
+        anonymize = privacy_cfg.get("anonymize_recipients", False)
+
+        if not hash_recipients and not anonymize:
+            return recipients
+
+        sanitized: List[str] = []
+        for rcpt in recipients:
+            if hash_recipients:
+                h = hashlib.sha256(rcpt.strip().lower().encode("utf-8")).hexdigest()
+                sanitized.append(f"sha256:{h}")
+            elif anonymize:
+                if "@" in rcpt:
+                    local, domain = rcpt.split("@", 1)
+                    masked_local = (local[0] + "***") if local else "***"
+                    sanitized.append(f"{masked_local}@{domain}")
+                else:
+                    sanitized.append("[REDACTED]")
+        return sanitized
+
     def persist_locally(self, result: AnalysisResult) -> bool:
         """Always persist analysis record to local JSONL file for offline auditing."""
         try:
             self.output_jsonl_path.parent.mkdir(parents=True, exist_ok=True)
             event_data = result.to_dict()
+            event_data["recipients"] = self._sanitize_recipients(event_data.get("recipients", []))
             with open(self.output_jsonl_path, "a", encoding="utf-8") as f:
                 f.write(json.dumps(event_data) + "\n")
             logger.debug(f"Persisted analysis event locally to {self.output_jsonl_path}")
@@ -71,6 +96,7 @@ class SplunkForwarder:
 
         # Prepare standard Splunk HEC event envelope
         event_dict = result.to_dict()
+        event_dict["recipients"] = self._sanitize_recipients(event_dict.get("recipients", []))
         epoch_now = int(time.time())
         hec_payload = {
             "time": epoch_now,
