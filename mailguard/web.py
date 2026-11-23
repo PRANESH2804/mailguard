@@ -172,6 +172,10 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 </div>
                 <div style="text-align: right; min-width: 180px;">
                     <div class="badge badge-{{ result.verdict.lower() }}">{{ result.verdict }}</div>
+                    <div style="margin-top: 6px; font-size: 0.85rem; font-weight: bold; color: var(--primary);">
+                        Action: <span class="badge badge-{{ 'pass' if result.recommended_action == 'ALLOW' else ('warn' if result.recommended_action == 'QUARANTINE_AND_REVIEW' else 'fail') }}">{{ result.recommended_action }}</span>
+                        <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 2px;">(Advisory only)</div>
+                    </div>
                     <div style="margin-top: 8px; font-size: 0.9rem;">Risk Score: <strong>{{ result.risk_score }} / 100</strong></div>
                     <div class="progress-bar-bg">
                         <div class="progress-bar-fill fill-{{ result.verdict.lower() }}" style="width: {{ result.risk_score }}%;"></div>

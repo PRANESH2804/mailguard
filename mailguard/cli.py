@@ -189,6 +189,7 @@ def main() -> int:
     p_analyze.add_argument("--send-to-splunk", action="store_true", help="Forward event to Splunk HEC")
     p_analyze.add_argument("--format", choices=["table", "json", "html"], default="table", help="Output format")
     p_analyze.add_argument("--output", "-o", help="Write report to output file")
+    p_analyze.add_argument("--soar-export", help="Export incident payload to SOAR JSON file")
     p_analyze.add_argument("--enrich", action="store_true", help="Enable optional threat intelligence enrichment")
 
     # Command: analyze-dir
@@ -249,6 +250,11 @@ def main() -> int:
             console.print(f"[green]HTML report written to {out_path}[/green]")
         else:
             analyzer.reporter.render_terminal(result)
+
+        if getattr(args, "soar_export", None):
+            from mailguard.soar_export import save_soar_ticket
+            save_soar_ticket(result, args.soar_export)
+            console.print(f"[green]SOAR incident ticket exported to {args.soar_export}[/green]")
 
         return 0
 

@@ -60,3 +60,21 @@ def test_cli_analyze_dir_offline(capsys):
         assert ret == 0
         captured = capsys.readouterr()
         assert "Batch Email Analysis Summary" in captured.out or "LEGITIMATE" in captured.out
+
+
+def test_cli_analyze_soar_export(tmp_path, capsys):
+    test_eml = Path("samples/legit/legit_01_standard_auth.eml")
+    if not test_eml.is_file():
+        pytest.skip("Sample file not generated")
+
+    soar_file = tmp_path / "soar_cli_out.json"
+    with patch("sys.argv", ["mailguard", "analyze", str(test_eml), "--offline", "--soar-export", str(soar_file)]):
+        ret = main()
+        assert ret == 0
+        assert soar_file.is_file()
+        with open(soar_file, "r") as f:
+            data = json.load(f)
+            assert data["id"].startswith("MG-")
+            assert data["verdict"] == "LEGITIMATE"
+            assert "recommended_action" in data
+

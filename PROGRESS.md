@@ -16,8 +16,10 @@ Tracking implementation phases, test runs, and completion milestones.
   - Deliverables: Rich terminal/table/HTML reporting, local JSONL persistence (`output/results.jsonl`), Splunk HEC forwarder with recipient privacy hashing/masking & retry logic, optional enrichment, SOAR ticketing export (`mailguard/soar_export.py`), and test suite (`test_soar_export.py`, `test_splunk_forwarder.py`).
   - Test Results: 64 passed in 1.76s.
   - Known gaps: None. Phase 4 CLI & Flask interfaces next.
-- [ ] **Phase 4: Interfaces (CLI & Web UI)** - Not Started
-  - Deliverables: CLI subcommands (`analyze`, `analyze-dir`, `web`), Flask UI, CSRF, security headers, and interface tests.
+- [x] **Phase 4: Interfaces (CLI & Web UI)** - Completed
+  - Deliverables: CLI with `analyze`, `analyze-dir`, `web`, `--offline`, `--send-to-splunk`, `--soar-export`, `--format json|table|html`; Flask UI with recommended actions, security headers, CSRF protection, and upload validation; unit tests covering CLI and web (valid upload, invalid extension, oversize, malformed email, JSON download, HTML escaping).
+  - Test Results: 68 passed in 1.91s.
+  - Known gaps: None. Phase 5 sample corpus generation and full test suite next.
 - [ ] **Phase 5: Samples & Full Test Suite** - Not Started
   - Deliverables: Synthetic sample corpus (legit, suspicious, spoofed), locally signed DKIM fixtures, comprehensive pytest suite.
 - [ ] **Phase 6: Validation & Evaluation** - Not Started
